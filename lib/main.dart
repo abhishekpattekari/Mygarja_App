@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
         CartScreen.routename: (context) => CartScreen(),
         WishlistScreen.routename: (context) => WishlistScreen(),
         MainHomeScreen.routename: (context) => MainHomeScreen(),
+    
       },
     );
   }

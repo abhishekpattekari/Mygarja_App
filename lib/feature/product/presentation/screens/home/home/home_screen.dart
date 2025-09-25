@@ -21,10 +21,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String category = "clothes";
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar('Good Morning'),
+      appBar: MyAppBar(),
       resizeToAvoidBottomInset: false,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -116,16 +117,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (context, index) {
                         return categoryTile(categoryData[index]['icon'],
                             categoryData[index]['title'], () {
-                          String? jsonData;
-                          jsonData = categoryData[index]['title'];
-                          jsonData = jsonData!.toLowerCase();
+                          String categoryName = categoryData[index]['title'];
+                          // Capitalize first letter for proper display
+                          String formattedName = categoryName[0].toUpperCase() + categoryName.substring(1);
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ProductGrid(
-                                    jsonData.toString(),
-                                    jsonData![0].toUpperCase() +
-                                        jsonData.substring(1)),
+                                builder: (context) => ProductGrid(formattedName),
                               ));
                         });
                       });

@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
-import '../models/user.dart';
 import '../models/product.dart';
-import '../data/dummy_data.dart';
 
 class CartController extends ChangeNotifier {
   List<CartItem> _cartItems = [];
 
   List<CartItem> get cartItems => _cartItems;
-  int get itemCount => DummyData.getCartItemCount();
-  double get totalAmount => DummyData.getCartTotal();
+  int get itemCount => _cartItems.fold(0, (sum, item) => sum + item.quantity);
+  double get totalAmount => _cartItems.fold(0.0, (sum, item) => sum + item.totalPrice);
 
-  CartController() {
-    _cartItems = DummyData.cartItems;
-  }
+  CartController();
 
   // Add item to cart
-  void addToCart(Product product, String selectedSize, {int quantity = 1}) {
+  Future<void> addToCart(Product product, String selectedSize, {int quantity = 1}) async {
     // Check if item already exists in cart
     int existingIndex = _cartItems.indexWhere(
       (item) => item.product.id == product.id && item.selectedSize == selectedSize,

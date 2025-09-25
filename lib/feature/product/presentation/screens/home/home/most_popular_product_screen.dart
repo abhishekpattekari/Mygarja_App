@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:mygarja/feature/product/presentation/widgets/back_app_bar.dart';
 import 'package:mygarja/feature/product/presentation/widgets/product_card.dart';
-import 'package:mygarja/data/dummy_data.dart';
+import 'package:mygarja/controllers/product_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:mygarja/core/asset_constants.dart' as asset;
 
 class MostPopularProductScreen extends StatefulWidget {
@@ -17,6 +18,7 @@ class MostPopularProductScreen extends StatefulWidget {
 
 class _MostPopularProductScreenState extends State<MostPopularProductScreen> {
   String category = "clothes";
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,26 +64,29 @@ class _MostPopularProductScreenState extends State<MostPopularProductScreen> {
                   },
                 ),
               ),
-              Builder(
-                  builder: (context) {
-                    // Use dummy data for most popular products
-                    final products = DummyData.products;
-                    return Expanded(
-                      child: GridView.builder(
-                          itemCount: products.length,
-                          scrollDirection: Axis.vertical,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                  childAspectRatio: .65,
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 7),
-                          itemBuilder: (context, index) => ProductCard(
-                              title: products[index].name,
-                              price: products[index].price,
-                              image_url: products[index].imageUrl,
-                              category: products[index].category,)),
-                    );
-                  }),
+              Consumer<ProductController>(
+                builder: (context, productController, child) {
+                  // Use product controller for most popular products
+                  final products = productController.products;
+                  return Expanded(
+                    child: GridView.builder(
+                      itemCount: products.length,
+                      scrollDirection: Axis.vertical,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            childAspectRatio: .65,
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 7),
+                      itemBuilder: (context, index) => ProductCard(
+                        title: products[index].name,
+                        price: products[index].price,
+                        image_url: products[index].imageUrl,
+                        category: products[index].category,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),

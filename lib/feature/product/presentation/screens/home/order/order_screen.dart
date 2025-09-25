@@ -5,6 +5,7 @@ import 'completed_order.dart';
 import 'ongoing_order.dart';
 
 class OrderScreen extends StatelessWidget {
+   static const routename = '/order-screen';
   @override
   Widget build(BuildContext context) {
     

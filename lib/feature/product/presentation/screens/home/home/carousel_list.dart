@@ -1,20 +1,22 @@
 import 'package:mygarja/feature/product/presentation/widgets/back_app_bar.dart';
 import 'package:mygarja/feature/product/presentation/widgets/product_card.dart';
-import 'package:mygarja/data/dummy_data.dart';
+import 'package:mygarja/controllers/product_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CarouselList extends StatelessWidget {
   static const routename = '/carousel_list';
   
   const CarouselList({Key? key}) : super(key: key);
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BackAppBar(context,"Special Offers"),
-      body: Builder(
-        builder: (BuildContext context) {
-          // Use dummy data for special offers
-          final products = DummyData.products.take(4).toList();
+      body: Consumer<ProductController>(
+        builder: (context, productController, child) {
+          // Use getLatestProducts method for special offers
+          final products = productController.getLatestProducts();
           
           return ListView.builder(
             itemCount: products.length,

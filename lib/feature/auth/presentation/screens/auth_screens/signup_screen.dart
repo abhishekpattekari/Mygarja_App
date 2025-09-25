@@ -2,6 +2,10 @@ import 'package:mygarja/feature/product/presentation/widgets/back_app_bar.dart';
 import 'package:mygarja/feature/product/presentation/screens/home/main_home_screen.dart';
 import 'package:mygarja/core/asset_constants.dart' as asset;
 import 'package:mygarja/feature/auth/presentation/screens/auth_screens/login_screen.dart';
+import 'package:mygarja/services/auth_service.dart';
+import 'package:mygarja/services/storage_service.dart';
+import 'package:mygarja/services/google_sign_in_service.dart';
+import 'package:mygarja/models/api/api_user.dart';
 import 'package:flutter/material.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -19,6 +23,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
+  final GoogleSignInService _googleSignInService = GoogleSignInService();
   bool _isLoading = false;
 
   Future<void> _handleSignUp() async {
@@ -40,19 +46,99 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _isLoading = true;
     });
 
-    // Simulate signup delay
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      final ApiUser? user = await _authService.signup(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        firstName: _firstNameController.text.trim(),
+        lastName: _lastNameController.text.trim(),
+        phoneNumber: _phoneController.text.trim(),
+      );
 
+      if (user != null) {
+        // Save token and user data
+        await StorageService.saveAuthToken(user.token!);
+        await StorageService.saveUserData(user.toJson());
+
+        // Navigate to MainHomeScreen and remove all previous routes
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          MainHomeScreen.routename,
+          (route) => false,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Signup failed. Please try again.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Signup error: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _handleGoogleSignIn() async {
     setState(() {
-      _isLoading = false;
+      _isLoading = true;
     });
 
-    // For demo purposes, any data works
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      MainHomeScreen.routename,
-      (route) => false,
-    );
+    try {
+      final ApiUser? user = await _googleSignInService.signInWithGoogle();
+
+      if (user != null) {
+        // Get full user profile
+        final ApiUser? fullUser = await _authService.getProfile();
+        
+        if (fullUser != null) {
+          // Save token and user data
+          await StorageService.saveAuthToken(fullUser.token!);
+          await StorageService.saveUserData(fullUser.toJson());
+
+          // Navigate to MainHomeScreen and remove all previous routes
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            MainHomeScreen.routename,
+            (route) => false,
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to get user profile.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Google Sign-In failed.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Google Sign-In error: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -217,21 +303,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        // Image.asset(
-                        //   asset.facebook_logo,
-                        //   width: 50, // Reduced size
-                        //   height: 50,
-                        // ),
-                        Image.asset(
-                          asset.google_logo,
-                          width: 50, // Reduced size
-                          height: 50,
+                        IconButton(
+                          icon: Image.asset(
+                            asset.google_logo,
+                            width: 50,
+                            height: 50,
+                          ),
+                          onPressed: _handleGoogleSignIn,
                         ),
-                        // Image.asset(
-                        //   asset.apple_logo,
-                        //   width: 50, // Reduced size
-                        //   height: 50,
-                        // ),
                       ],
                     ),
                     const SizedBox(height: 20),

@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'controllers/auth_controller.dart';
+import 'controllers/product_controller.dart';
+import 'controllers/cart_controller.dart';
+import 'controllers/order_controller.dart';
+import 'controllers/address_controller.dart';
 import 'feature/auth/presentation/screens/auth_screens/auth_main_screen.dart';
 import 'feature/auth/presentation/screens/auth_screens/login_screen.dart';
 import 'feature/auth/presentation/screens/auth_screens/signup_screen.dart';
@@ -10,10 +16,23 @@ import 'feature/product/presentation/screens/home/home/home_screen.dart';
 import 'feature/product/presentation/screens/home/home/most_popular_product_screen.dart';
 import 'feature/product/presentation/screens/home/wishlist/wishlist_screen.dart';
 import 'feature/product/presentation/screens/home/main_home_screen.dart';
+import 'feature/product/presentation/screens/home/order/order_screen.dart';
+import 'feature/product/presentation/screens/home/address/address_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthController()),
+        ChangeNotifierProvider(create: (context) => ProductController()),
+        ChangeNotifierProvider(create: (context) => CartController()),
+        ChangeNotifierProvider(create: (context) => OrderController()),
+        ChangeNotifierProvider(create: (context) => AddressController()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -34,7 +53,8 @@ class MyApp extends StatelessWidget {
         CartScreen.routename: (context) => CartScreen(),
         WishlistScreen.routename: (context) => WishlistScreen(),
         MainHomeScreen.routename: (context) => MainHomeScreen(),
-    
+        OrderScreen.routename: (context) => OrderScreen(),
+        AddressScreen.routename: (context) => AddressScreen(),
       },
     );
   }

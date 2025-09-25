@@ -23,6 +23,7 @@ const home = "assets/icons/general/bottom_nav/home.png";
 const cart = "assets/icons/general/bottom_nav/cart.png";
 const orders = "assets/icons/general/bottom_nav/orders.png";
 const wallet = "assets/icons/general/bottom_nav/wallet.png";
+const wishlist = "assets/icons/general/bottom_nav/wishlist.png";
 const profile = "assets/icons/general/bottom_nav/profile.png";
 
 String numberFormat(int price) {

@@ -1,6 +1,7 @@
-import 'package:mygarja/feature/auth/presentation/widgets/back_app_bar.dart';
+import 'package:mygarja/feature/product/presentation/widgets/back_app_bar.dart';
 import 'package:mygarja/feature/product/presentation/screens/home/main_home_screen.dart';
 import 'package:mygarja/core/asset_constants.dart' as asset;
+import 'package:mygarja/feature/auth/presentation/screens/auth_screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -57,7 +58,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: BackAppBar(context, ''),
       body: _isLoading
           ? const Center(
@@ -66,167 +66,195 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 strokeWidth: 7,
               ),
             )
-          : Container(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(
-                    'Create Your Account',
-                    style: asset.introStyles(55),
-                  ),
-                  TextFormField(
-                    controller: _firstNameController,
-                    style: asset.introStyles(20),
-                    decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        prefixIcon: const IconTheme(
-                          data: IconThemeData(color: Colors.grey, size: 25),
-                          child: Icon(Icons.person),
-                        ),
-                        hintText: "First Name",
-                        prefixIconColor: Colors.grey,
-                        hintStyle: asset.introStyles(18, color: Colors.black45),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(
-                                color: Colors.black, width: 1.5)),
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(20))),
-                  ),
-                  TextFormField(
-                    controller: _lastNameController,
-                    style: asset.introStyles(20),
-                    decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        prefixIcon: const IconTheme(
-                          data: IconThemeData(color: Colors.grey, size: 25),
-                          child: Icon(Icons.person_outline),
-                        ),
-                        hintText: "Last Name",
-                        prefixIconColor: Colors.grey,
-                        hintStyle: asset.introStyles(18, color: Colors.black45),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(
-                                color: Colors.black, width: 1.5)),
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(20))),
-                  ),
-                  TextFormField(
-                    controller: _phoneController,
-                    style: asset.introStyles(20),
-                    decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        prefixIcon: const IconTheme(
-                          data: IconThemeData(color: Colors.grey, size: 25),
-                          child: Icon(Icons.phone),
-                        ),
-                        hintText: "Phone Number",
-                        prefixIconColor: Colors.grey,
-                        hintStyle: asset.introStyles(18, color: Colors.black45),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(
-                                color: Colors.black, width: 1.5)),
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(20))),
-                  ),
-                  TextFormField(
-                    controller: _emailController,
-                    style: asset.introStyles(20),
-                    decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        prefixIcon: const IconTheme(
-                          data: IconThemeData(color: Colors.grey, size: 25),
-                          child: Icon(Icons.email_outlined),
-                        ),
-                        hintText: "Email",
-                        prefixIconColor: Colors.grey,
-                        hintStyle: asset.introStyles(18, color: Colors.black45),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(
-                                color: Colors.black, width: 1.5)),
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(20))),
-                  ),
-                  TextFormField(
-                    controller: _passwordController,
-                    style: asset.introStyles(20),
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        prefixIcon: const IconTheme(
+          : SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 40),
+                child: Column(
+                  children: [
+                    Text(
+                      'Create Your Account',
+                      style: asset.introStyles(45), // Reduced font size
+                    ),
+                    const SizedBox(height: 30),
+                    TextFormField(
+                      controller: _firstNameController,
+                      style: asset.introStyles(20),
+                      decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          prefixIcon: const IconTheme(
                             data: IconThemeData(color: Colors.grey, size: 25),
-                            child: Icon(Icons.lock_outline)),
-                        hintText: "Password",
-                        suffixIcon: const IconTheme(
-                          child: Icon(Icons.remove_red_eye),
-                          data: IconThemeData(color: Colors.grey),
+                            child: Icon(Icons.person),
+                          ),
+                          hintText: "First Name",
+                          prefixIconColor: Colors.grey,
+                          hintStyle: asset.introStyles(18, color: Colors.black45),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: const BorderSide(
+                                  color: Colors.black, width: 1.5)),
+                          filled: true,
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(20))),
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: _lastNameController,
+                      style: asset.introStyles(20),
+                      decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          prefixIcon: const IconTheme(
+                            data: IconThemeData(color: Colors.grey, size: 25),
+                            child: Icon(Icons.person_outline),
+                          ),
+                          hintText: "Last Name",
+                          prefixIconColor: Colors.grey,
+                          hintStyle: asset.introStyles(18, color: Colors.black45),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: const BorderSide(
+                                  color: Colors.black, width: 1.5)),
+                          filled: true,
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(20))),
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: _phoneController,
+                      style: asset.introStyles(20),
+                      decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          prefixIcon: const IconTheme(
+                            data: IconThemeData(color: Colors.grey, size: 25),
+                            child: Icon(Icons.phone),
+                          ),
+                          hintText: "Phone Number",
+                          prefixIconColor: Colors.grey,
+                          hintStyle: asset.introStyles(18, color: Colors.black45),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: const BorderSide(
+                                  color: Colors.black, width: 1.5)),
+                          filled: true,
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(20))),
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: _emailController,
+                      style: asset.introStyles(20),
+                      decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          prefixIcon: const IconTheme(
+                            data: IconThemeData(color: Colors.grey, size: 25),
+                            child: Icon(Icons.email_outlined),
+                          ),
+                          hintText: "Email",
+                          prefixIconColor: Colors.grey,
+                          hintStyle: asset.introStyles(18, color: Colors.black45),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: const BorderSide(
+                                  color: Colors.black, width: 1.5)),
+                          filled: true,
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(20))),
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: _passwordController,
+                      style: asset.introStyles(20),
+                      obscureText: true,
+                      decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          prefixIcon: const IconTheme(
+                              data: IconThemeData(color: Colors.grey, size: 25),
+                              child: Icon(Icons.lock_outline)),
+                          hintText: "Password",
+                          suffixIcon: const IconTheme(
+                            child: Icon(Icons.remove_red_eye),
+                            data: IconThemeData(color: Colors.grey),
+                          ),
+                          prefixIconColor: Colors.grey,
+                          hintStyle: asset.introStyles(18, color: Colors.black45),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: const BorderSide(
+                                  color: Colors.black, width: 1.5)),
+                          filled: true,
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(20))),
+                    ),
+                    const SizedBox(height: 30),
+                    InkWell(
+                      onTap: _handleSignUp,
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: Colors.black87,
+                            borderRadius: BorderRadius.circular(35)),
+                        child: Text(
+                          "Sign up",
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Ubuntu',
+                              fontSize: 26),
                         ),
-                        prefixIconColor: Colors.grey,
-                        hintStyle: asset.introStyles(18, color: Colors.black45),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(
-                                color: Colors.black, width: 1.5)),
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(20))),
-                  ),
-                  InkWell(
-                    onTap: _handleSignUp,
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          color: Colors.black87,
-                          borderRadius: BorderRadius.circular(35)),
-                      child: Text(
-                        "Sign up",
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Ubuntu',
-                            fontSize: 26),
                       ),
                     ),
-                  ),
-                  Text(
-                    'or continue with',
-                    style: asset.introStyles(20, color: Colors.black54),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Image.asset(
-                        asset.facebook_logo,
-                        width: 60,
-                        height: 60,
-                      ),
-                      Image.asset(
-                        asset.google_logo,
-                        width: 60,
-                        height: 60,
-                      ),
-                      Image.asset(
-                        asset.apple_logo,
-                        width: 60,
-                        height: 60,
-                      ),
-                    ],
-                  ),
-                ],
+                    const SizedBox(height: 20),
+                    Text(
+                      'or continue with',
+                      style: asset.introStyles(20, color: Colors.black54),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        // Image.asset(
+                        //   asset.facebook_logo,
+                        //   width: 50, // Reduced size
+                        //   height: 50,
+                        // ),
+                        Image.asset(
+                          asset.google_logo,
+                          width: 50, // Reduced size
+                          height: 50,
+                        ),
+                        // Image.asset(
+                        //   asset.apple_logo,
+                        //   width: 50, // Reduced size
+                        //   height: 50,
+                        // ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Already have an account?",
+                          style: asset.introStyles(16, color: Colors.black54),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(context, LoginScreen.routename);
+                          },
+                          child: Text(
+                            "Sign in",
+                            style: asset.introStyles(16),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
     );

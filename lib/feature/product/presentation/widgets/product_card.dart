@@ -50,7 +50,7 @@ class ProductCard extends StatelessWidget {
                     Container(
                       decoration: BoxDecoration(
                           image: DecorationImage(
-                        image: NetworkImage(image_url[0].toString()),
+                        image: NetworkImage(image_url),
                       )),
                     ),
                     Positioned(

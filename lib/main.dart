@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'feature/auth/presentation/screens/auth_screens/auth_main_screen.dart';
 import 'feature/auth/presentation/screens/auth_screens/login_screen.dart';
 import 'feature/auth/presentation/screens/auth_screens/signup_screen.dart';
+import 'feature/auth/presentation/screens/auth_screens/forgot_password_screen.dart';
 import 'feature/auth/presentation/screens/splash_screen/main_splash_screen.dart';
 import 'feature/product/presentation/screens/home/cart/cart_screen.dart';
 import 'feature/product/presentation/screens/home/home/carousel_list.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         AuthMainScreen.routename: (context) => AuthMainScreen(),
         SignUpScreen.routename: (context) => SignUpScreen(),
         LoginScreen.routename: (context) => LoginScreen(),
+        ForgotPasswordScreen.routename: (context) => ForgotPasswordScreen(),
         HomeScreen.routename: (context) => HomeScreen(),
         CarouselList.routename: (context) => CarouselList(),
         MostPopularProductScreen.routename: (context) => MostPopularProductScreen(),

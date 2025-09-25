@@ -37,3 +37,43 @@ class Category {
     required this.imageUrl,
   });
 }
+
+class CartItem {
+  final Product product;
+  int quantity;
+  final String selectedSize;
+
+  CartItem({
+    required this.product,
+    required this.quantity,
+    required this.selectedSize,
+  });
+
+  double get totalPrice {
+    // Remove currency symbol and convert to double
+    String cleanPrice = product.price.replaceAll('₹', '').replaceAll(',', '');
+    try {
+      return double.parse(cleanPrice) * quantity;
+    } catch (e) {
+      return 0.0;
+    }
+  }
+}
+
+class Order {
+  final int id;
+  final List<CartItem> items;
+  final double totalAmount;
+  final String status;
+  final DateTime orderDate;
+  final String shippingAddress;
+
+  Order({
+    required this.id,
+    required this.items,
+    required this.totalAmount,
+    required this.status,
+    required this.orderDate,
+    required this.shippingAddress,
+  });
+}

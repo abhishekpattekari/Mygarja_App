@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mygarja/core/asset_constants.dart' as asset;
-
-import 'cart/cart_screen.dart';
-import 'home/home_screen.dart';
-import 'order/order_screen.dart';
-import 'profile/profile_screen.dart';
-import 'wishlist/wishlist_screen.dart';
+import 'package:mygarja/feature/product/presentation/screens/home/home/home_screen.dart';
+import 'package:mygarja/feature/product/presentation/screens/home/cart/cart_screen.dart';
+import 'package:mygarja/feature/product/presentation/screens/home/order/order_screen.dart';
+import 'package:mygarja/feature/product/presentation/screens/home/wishlist/wishlist_screen.dart';
+import 'package:mygarja/feature/product/presentation/screens/home/profile/profile_screen.dart';
 
 class MainHomeScreen extends StatefulWidget {
   static const routename = '/mainhomescreen';
@@ -69,7 +68,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                 color: currentIndex == 3 ? Colors.black87 : Colors.black54,
                 width: 25,
               ),
-              label: "Wallet"),
+              label: "wishlist"),
           BottomNavigationBarItem(
               icon: Image.asset(
                 asset.profile,

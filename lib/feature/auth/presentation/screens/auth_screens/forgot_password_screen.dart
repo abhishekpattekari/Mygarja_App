@@ -1,4 +1,4 @@
-import 'package:mygarja/feature/auth/presentation/widgets/back_app_bar.dart';
+import 'package:mygarja/feature/product/presentation/widgets/back_app_bar.dart';
 import 'package:mygarja/core/asset_constants.dart' as asset;
 import 'package:flutter/material.dart';
 

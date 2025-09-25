@@ -9,7 +9,7 @@ class CarouselCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 200,
+      height: 180, // Reduced height to prevent overflow
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
@@ -22,21 +22,21 @@ class CarouselCard extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            width: 200,
-            padding: const EdgeInsets.symmetric(vertical: 20),
+            width: 180, // Reduced width
+            padding: const EdgeInsets.symmetric(vertical: 15), // Reduced vertical padding
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text(
                   discount,
-                  style: asset.introStyles(34),
+                  style: asset.introStyles(30), // Reduced font size
                 ),
                 Text(
                   heading,
-                  style: asset.introStyles(24),
+                  style: asset.introStyles(20), // Reduced font size
                 ),
-                Text(subtitle, style: asset.introStyles(16)),
+                Text(subtitle, style: asset.introStyles(14)), // Reduced font size
               ],
             ),
             alignment: Alignment.centerLeft,

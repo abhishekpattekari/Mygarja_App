@@ -36,8 +36,8 @@ class DummyData {
     Product(
       id: 1,
       name: "Classic White T-Shirt",
-      price: "₹499",
-      originalPrice: "₹799",
+      price: "499",
+      originalPrice: "799",
       discount: "38% OFF",
       imageUrl: "https://via.placeholder.com/300x400/FF6B6B/FFFFFF?text=White+T-Shirt",
       category: "T-Shirts",
@@ -49,8 +49,8 @@ class DummyData {
     Product(
       id: 2,
       name: "Slim Fit Blue Jeans",
-      price: "₹1,299",
-      originalPrice: "₹1,999",
+      price: "1299",
+      originalPrice: "1999",
       discount: "35% OFF",
       imageUrl: "https://via.placeholder.com/300x400/4ECDC4/FFFFFF?text=Blue+Jeans",
       category: "Jeans",
@@ -62,8 +62,8 @@ class DummyData {
     Product(
       id: 3,
       name: "Running Sneakers",
-      price: "₹2,499",
-      originalPrice: "₹3,999",
+      price: "2499",
+      originalPrice: "3999",
       discount: "38% OFF",
       imageUrl: "https://via.placeholder.com/300x400/45B7D1/FFFFFF?text=Sneakers",
       category: "Shoes",
@@ -75,8 +75,8 @@ class DummyData {
     Product(
       id: 4,
       name: "Leather Jacket",
-      price: "₹3,999",
-      originalPrice: "₹6,999",
+      price: "3999",
+      originalPrice: "6999",
       discount: "43% OFF",
       imageUrl: "https://via.placeholder.com/300x400/F7DC6F/FFFFFF?text=Leather+Jacket",
       category: "Jackets",
@@ -88,8 +88,8 @@ class DummyData {
     Product(
       id: 5,
       name: "Casual Watch",
-      price: "₹1,999",
-      originalPrice: "₹2,999",
+      price: "1999",
+      originalPrice: "2999",
       discount: "33% OFF",
       imageUrl: "https://via.placeholder.com/300x400/BB8FCE/FFFFFF?text=Watch",
       category: "Accessories",
@@ -101,8 +101,8 @@ class DummyData {
     Product(
       id: 6,
       name: "Black Polo Shirt",
-      price: "₹699",
-      originalPrice: "₹1,199",
+      price: "699",
+      originalPrice: "1199",
       discount: "42% OFF",
       imageUrl: "https://via.placeholder.com/300x400/2C3E50/FFFFFF?text=Polo+Shirt",
       category: "T-Shirts",
@@ -114,8 +114,8 @@ class DummyData {
     Product(
       id: 7,
       name: "Cargo Pants",
-      price: "₹1,599",
-      originalPrice: "₹2,299",
+      price: "1599",
+      originalPrice: "2299",
       discount: "30% OFF",
       imageUrl: "https://via.placeholder.com/300x400/E67E22/FFFFFF?text=Cargo+Pants",
       category: "Jeans",
@@ -127,8 +127,8 @@ class DummyData {
     Product(
       id: 8,
       name: "Canvas Shoes",
-      price: "₹1,299",
-      originalPrice: "₹1,899",
+      price: "1299",
+      originalPrice: "1899",
       discount: "32% OFF",
       imageUrl: "https://via.placeholder.com/300x400/27AE60/FFFFFF?text=Canvas+Shoes",
       category: "Shoes",
@@ -218,10 +218,17 @@ class DummyData {
   }
 
   static double getCartTotal() {
-    return cartItems.fold(0.0, (total, item) => total + item.totalPrice);
+    return cartItems.fold(0.0, (total, item) {
+      try {
+        double price = double.parse(item.product.price);
+        return total + (price * item.quantity);
+      } catch (e) {
+        return total;
+      }
+    });
   }
 
   static int getCartItemCount() {
-    return cartItems.fold(0, (total, item) => total + item.quantity);
+    return cartItems.fold<int>(0, (total, item) => total + item.quantity);
   }
 }

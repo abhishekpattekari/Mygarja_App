@@ -2,8 +2,8 @@ class Product {
   final int id;
   final String name;
   final String price;
-  final String originalPrice;
-  final String discount;
+  final String? originalPrice;
+  final String? discount;
   final String imageUrl;
   final String category;
   final String description;
@@ -15,8 +15,8 @@ class Product {
     required this.id,
     required this.name,
     required this.price,
-    required this.originalPrice,
-    required this.discount,
+    this.originalPrice,
+    this.discount,
     required this.imageUrl,
     required this.category,
     required this.description,

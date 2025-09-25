@@ -15,8 +15,14 @@ class CarouselList extends StatelessWidget {
       appBar: BackAppBar(context,"Special Offers"),
       body: Consumer<ProductController>(
         builder: (context, productController, child) {
-          // Use getLatestProducts method for special offers
-          final products = productController.getLatestProducts();
+          // Use latest products from API for special offers
+          final products = productController.latestProducts;
+          
+          if (products.isEmpty) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
           
           return ListView.builder(
             itemCount: products.length,

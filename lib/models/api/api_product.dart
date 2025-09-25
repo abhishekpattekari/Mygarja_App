@@ -2,8 +2,8 @@ class ApiProduct {
   final int id;
   final String productName;
   final String price;
-  final String originalPrice;
-  final String discount;
+  final String? originalPrice;
+  final String? discount;
   final int quantity;
   final bool isActive;
   final String description;
@@ -15,16 +15,16 @@ class ApiProduct {
   final String imageUrl;
   final String imagePublicId;
   final String category;
-  final String date;
-  final String time;
+  final String? date;
+  final String? time;
   final List<dynamic> reviews;
 
   ApiProduct({
     required this.id,
     required this.productName,
     required this.price,
-    required this.originalPrice,
-    required this.discount,
+    this.originalPrice,
+    this.discount,
     required this.quantity,
     required this.isActive,
     required this.description,
@@ -36,8 +36,8 @@ class ApiProduct {
     required this.imageUrl,
     required this.imagePublicId,
     required this.category,
-    required this.date,
-    required this.time,
+    this.date,
+    this.time,
     required this.reviews,
   });
 
@@ -46,10 +46,10 @@ class ApiProduct {
       id: json['id'] as int,
       productName: json['productName'] as String,
       price: json['price'] as String,
-      originalPrice: json['originalPrice'] as String,
-      discount: json['discount'] as String,
+      originalPrice: json['originalPrice'] as String?,
+      discount: json['discount'] as String?,
       quantity: json['quantity'] as int,
-      isActive: json['isActive'] == 'true' || json['isActive'] == true,
+      isActive: json['isActive'] == '1' || json['isActive'] == 1 || json['isActive'] == true,
       description: json['description'] as String,
       xs: json['XS'] as String?,
       m: json['M'] as String?,
@@ -59,8 +59,8 @@ class ApiProduct {
       imageUrl: json['imageUrl'] as String,
       imagePublicId: json['imagePublicId'] as String,
       category: json['category'] as String,
-      date: json['date'] as String,
-      time: json['time'] as String,
+      date: json['date'] as String?,
+      time: json['time'] as String?,
       reviews: json['reviews'] as List<dynamic>,
     );
   }

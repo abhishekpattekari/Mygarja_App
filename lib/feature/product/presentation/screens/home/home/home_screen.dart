@@ -5,8 +5,10 @@ import 'package:mygarja/feature/product/presentation/widgets/carousel_card.dart'
 import 'package:mygarja/feature/product/presentation/widgets/home_app_bar.dart';
 import 'package:mygarja/feature/product/presentation/widgets/input_field.dart';
 import 'package:mygarja/feature/product/presentation/widgets/product_grid.dart';
+import 'package:mygarja/controllers/product_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:mygarja/core/asset_constants.dart' as asset;
+import 'package:provider/provider.dart';
 import 'carousel_list.dart';
 import 'most_popular_product_screen.dart';
 
@@ -21,6 +23,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String category = "clothes";
+  
+  @override
+  void initState() {
+    super.initState();
+    // Load latest products when screen initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ProductController>(context, listen: false).loadLatestProducts();
+    });
+  }
   
   @override
   Widget build(BuildContext context) {

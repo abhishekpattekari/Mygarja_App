@@ -8,6 +8,7 @@ class ProductController extends ChangeNotifier {
   List<Product> _products = [];
   List<Category> _categories = [];
   List<Product> _filteredProducts = [];
+  List<Product> _latestProducts = [];
   String _selectedCategory = "All";
   bool _isLoading = false;
   final ProductService _productService = ProductService();
@@ -15,11 +16,13 @@ class ProductController extends ChangeNotifier {
   List<Product> get products => _products;
   List<Category> get categories => _categories;
   List<Product> get filteredProducts => _filteredProducts;
+  List<Product> get latestProducts => _latestProducts;
   String get selectedCategory => _selectedCategory;
   bool get isLoading => _isLoading;
 
   ProductController() {
     loadProducts();
+    loadLatestProducts();
   }
 
   // Convert API Product to App Product
@@ -81,6 +84,19 @@ class ProductController extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Load latest products from API
+  Future<void> loadLatestProducts() async {
+    try {
+      final List<ApiProduct>? apiProducts = await _productService.getLatestProducts();
+      if (apiProducts != null) {
+        _latestProducts = apiProducts.map((apiProduct) => _convertApiProduct(apiProduct)).toList();
+      }
+    } catch (e) {
+      print('Error loading latest products: $e');
+    }
+    notifyListeners();
+  }
+
   // Load products by category from API
   Future<List<Product>> loadProductsByCategory(String category) async {
     try {
@@ -110,9 +126,12 @@ class ProductController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Get latest products
+  // Get latest products (fallback to first 4 if API fails)
   List<Product> getLatestProducts() {
-    // Return first 4 products as latest
+    if (_latestProducts.isNotEmpty) {
+      return _latestProducts;
+    }
+    // Fallback to first 4 products
     return _products.take(4).toList();
   }
 

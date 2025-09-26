@@ -17,11 +17,26 @@ class OrderService extends ApiService {
       );
 
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        return ApiOrder.fromJson(jsonData);
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          final jsonData = jsonDecode(response.body);
+          return ApiOrder.fromJson(jsonData);
+        } else {
+          print('Buy now failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          
+          // Check if this is an authentication issue
+          if (response.body.trim().startsWith('<!doctype') || response.body.trim().startsWith('<html')) {
+            print('Buy now failed: Authentication error - token may be invalid or expired');
+          }
+          
+          return null;
+        }
       } else {
         // Handle error
         print('Buy now failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
         return null;
       }
     } catch (e) {
@@ -40,11 +55,26 @@ class OrderService extends ApiService {
       );
 
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        return ApiOrder.fromJson(jsonData);
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          final jsonData = jsonDecode(response.body);
+          return ApiOrder.fromJson(jsonData);
+        } else {
+          print('Checkout cart failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          
+          // Check if this is an authentication issue
+          if (response.body.trim().startsWith('<!doctype') || response.body.trim().startsWith('<html')) {
+            print('Checkout cart failed: Authentication error - token may be invalid or expired');
+          }
+          
+          return null;
+        }
       } else {
         // Handle error
         print('Checkout cart failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
         return null;
       }
     } catch (e) {
@@ -68,10 +98,25 @@ class OrderService extends ApiService {
       );
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          return jsonDecode(response.body);
+        } else {
+          print('Create Razorpay order failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          
+          // Check if this is an authentication issue
+          if (response.body.trim().startsWith('<!doctype') || response.body.trim().startsWith('<html')) {
+            print('Create Razorpay order failed: Authentication error - token may be invalid or expired');
+          }
+          
+          return null;
+        }
       } else {
         // Handle error
         print('Create Razorpay order failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
         return null;
       }
     } catch (e) {
@@ -95,11 +140,26 @@ class OrderService extends ApiService {
       );
 
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        return ApiOrder.fromJson(jsonData);
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          final jsonData = jsonDecode(response.body);
+          return ApiOrder.fromJson(jsonData);
+        } else {
+          print('Verify payment failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          
+          // Check if this is an authentication issue
+          if (response.body.trim().startsWith('<!doctype') || response.body.trim().startsWith('<html')) {
+            print('Verify payment failed: Authentication error - token may be invalid or expired');
+          }
+          
+          return null;
+        }
       } else {
         // Handle error
         print('Verify payment failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
         return null;
       }
     } catch (e) {
@@ -114,14 +174,29 @@ class OrderService extends ApiService {
       final response = await get('/user/orders/history', authenticated: true);
 
       if (response.statusCode == 200) {
-        final List<dynamic> jsonData = jsonDecode(response.body);
-        final List<ApiOrder> orders = jsonData
-            .map((item) => ApiOrder.fromJson(item as Map<String, dynamic>))
-            .toList();
-        return orders;
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          final List<dynamic> jsonData = jsonDecode(response.body);
+          final List<ApiOrder> orders = jsonData
+              .map((item) => ApiOrder.fromJson(item as Map<String, dynamic>))
+              .toList();
+          return orders;
+        } else {
+          print('Get order history failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          
+          // Check if this is an authentication issue
+          if (response.body.trim().startsWith('<!doctype') || response.body.trim().startsWith('<html')) {
+            print('Get order history failed: Authentication error - token may be invalid or expired');
+          }
+          
+          return null;
+        }
       } else {
         // Handle error
         print('Get order history failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
         return null;
       }
     } catch (e) {

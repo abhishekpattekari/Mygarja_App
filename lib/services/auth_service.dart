@@ -28,15 +28,24 @@ class AuthService extends ApiService {
       print('AuthService: Signup response body: ${response.body}');
 
       if (response.statusCode == 201) {
-        final jsonData = jsonDecode(response.body);
-        final user = ApiUser.fromJson(jsonData);
-        // Set token for future authenticated requests
-        setToken(user.token!);
-        print('AuthService: Signup successful for user: ${user.firstName} ${user.lastName}');
-        return user;
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          final jsonData = jsonDecode(response.body);
+          final user = ApiUser.fromJson(jsonData);
+          // Set token for future authenticated requests
+          setToken(user.token!);
+          print('AuthService: Signup successful for user: ${user.firstName} ${user.lastName}');
+          return user;
+        } else {
+          print('AuthService: Signup failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          return null;
+        }
       } else {
         // Handle error
         print('AuthService: Signup failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
         return null;
       }
     } catch (e) {
@@ -62,15 +71,24 @@ class AuthService extends ApiService {
       print('AuthService: Login response body: ${response.body}');
 
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        final user = ApiUser.fromJson(jsonData);
-        // Set token for future authenticated requests
-        setToken(user.token!);
-        print('AuthService: Login successful for user: ${user.firstName} ${user.lastName}');
-        return user;
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          final jsonData = jsonDecode(response.body);
+          final user = ApiUser.fromJson(jsonData);
+          // Set token for future authenticated requests
+          setToken(user.token!);
+          print('AuthService: Login successful for user: ${user.firstName} ${user.lastName}');
+          return user;
+        } else {
+          print('AuthService: Login failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          return null;
+        }
       } else {
         // Handle error
         print('AuthService: Login failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
         return null;
       }
     } catch (e) {
@@ -116,26 +134,35 @@ class AuthService extends ApiService {
       print('AuthService: Google login callback response body: ${response.body}');
 
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        final token = jsonData['token'] as String;
-        
-        // Create a user object with the token
-        final user = ApiUser(
-          id: 0, // ID will be retrieved from profile endpoint
-          email: email,
-          firstName: givenName,
-          lastName: familyName,
-          role: 'USER',
-          token: token,
-        );
-        
-        // Set token for future authenticated requests
-        setToken(token);
-        print('AuthService: Google login callback successful');
-        return user;
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          final jsonData = jsonDecode(response.body);
+          final token = jsonData['token'] as String;
+          
+          // Create a user object with the token
+          final user = ApiUser(
+            id: 0, // ID will be retrieved from profile endpoint
+            email: email,
+            firstName: givenName,
+            lastName: familyName,
+            role: 'USER',
+            token: token,
+          );
+          
+          // Set token for future authenticated requests
+          setToken(token);
+          print('AuthService: Google login callback successful');
+          return user;
+        } else {
+          print('AuthService: Google login callback failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          return null;
+        }
       } else {
         // Handle error
         print('AuthService: Google login callback failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
         return null;
       }
     } catch (e) {
@@ -155,13 +182,31 @@ class AuthService extends ApiService {
       print('AuthService: Get profile response body: ${response.body}');
 
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        final user = ApiUser.fromJson(jsonData);
-        print('AuthService: Get profile successful for user: ${user.firstName} ${user.lastName}');
-        return user;
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          final jsonData = jsonDecode(response.body);
+          // The profile response doesn't include the token, so we need to preserve it
+          final user = ApiUser(
+            id: jsonData['id'] as int,
+            email: jsonData['email'] as String,
+            firstName: jsonData['firstName'] as String,
+            lastName: jsonData['lastName'] as String,
+            phoneNumber: jsonData['phoneNumber'] as String?,
+            token: token, // Preserve the token from login/signup
+            role: jsonData['role'] as String,
+          );
+          print('AuthService: Get profile successful for user: ${user.firstName} ${user.lastName}');
+          return user;
+        } else {
+          print('AuthService: Get profile failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          return null;
+        }
       } else {
         // Handle error
         print('AuthService: Get profile failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
         return null;
       }
     } catch (e) {
@@ -218,10 +263,18 @@ class AuthService extends ApiService {
       print('AuthService: Reset password response body: ${response.body}');
 
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        final success = jsonData['success'] == true;
-        print('AuthService: Reset password result: $success');
-        return success;
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          final jsonData = jsonDecode(response.body);
+          final success = jsonData['success'] == true;
+          print('AuthService: Reset password result: $success');
+          return success;
+        } else {
+          print('AuthService: Reset password failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          return false;
+        }
       }
       print('AuthService: Reset password failed with status: ${response.statusCode}');
       return false;

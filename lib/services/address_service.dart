@@ -21,10 +21,25 @@ class AddressService extends ApiService {
       }, authenticated: true);
 
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        return ApiAddress.fromJson(jsonData);
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          final jsonData = jsonDecode(response.body);
+          return ApiAddress.fromJson(jsonData);
+        } else {
+          print('Add address failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          
+          // Check if this is an authentication issue
+          if (response.body.trim().startsWith('<!doctype') || response.body.trim().startsWith('<html')) {
+            print('Add address failed: Authentication error - token may be invalid or expired');
+          }
+          
+          return null;
+        }
       } else {
         print('Add address failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
         return null;
       }
     } catch (e) {
@@ -39,13 +54,28 @@ class AddressService extends ApiService {
       final response = await get('/user/address/byUser', authenticated: true);
 
       if (response.statusCode == 200) {
-        final List<dynamic> jsonData = jsonDecode(response.body);
-        final List<ApiAddress> addresses = jsonData
-            .map((item) => ApiAddress.fromJson(item as Map<String, dynamic>))
-            .toList();
-        return addresses;
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          final List<dynamic> jsonData = jsonDecode(response.body);
+          final List<ApiAddress> addresses = jsonData
+              .map((item) => ApiAddress.fromJson(item as Map<String, dynamic>))
+              .toList();
+          return addresses;
+        } else {
+          print('Get user addresses failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          
+          // Check if this is an authentication issue
+          if (response.body.trim().startsWith('<!doctype') || response.body.trim().startsWith('<html')) {
+            print('Get user addresses failed: Authentication error - token may be invalid or expired');
+          }
+          
+          return null;
+        }
       } else {
         print('Get user addresses failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
         return null;
       }
     } catch (e) {
@@ -63,6 +93,13 @@ class AddressService extends ApiService {
         return true;
       } else {
         print('Delete address failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
+        
+        // Check if this is an authentication issue
+        if (response.body.trim().startsWith('<!doctype') || response.body.trim().startsWith('<html')) {
+          print('Delete address failed: Authentication error - token may be invalid or expired');
+        }
+        
         return false;
       }
     } catch (e) {

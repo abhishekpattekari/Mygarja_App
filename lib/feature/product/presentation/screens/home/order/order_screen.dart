@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:mygarja/core/asset_constants.dart' as asset;
+import 'package:mygarja/controllers/order_controller.dart';
+import 'package:provider/provider.dart';
 
 import 'completed_order.dart';
 import 'ongoing_order.dart';
 
 class OrderScreen extends StatelessWidget {
-   static const routename = '/order-screen';
+  static const routename = '/order-screen';
+  
   @override
   Widget build(BuildContext context) {
+    // Load order history when the screen is opened
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<OrderController>(context, listen: false).getOrderHistory();
+    });
     
     return DefaultTabController(
       length: 2,

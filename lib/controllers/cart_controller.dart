@@ -1,83 +1,189 @@
 import 'package:flutter/material.dart';
+import '../models/api/api_cart.dart';
+import '../models/api/api_cart_item.dart';
+import '../models/api/api_product.dart';
 import '../models/product.dart';
+import '../services/cart_service.dart';
 
 class CartController extends ChangeNotifier {
-  List<CartItem> _cartItems = [];
+  ApiCart? _cart;
+  bool _isLoading = false;
+  final CartService _cartService = CartService();
 
-  List<CartItem> get cartItems => _cartItems;
-  int get itemCount => _cartItems.fold(0, (sum, item) => sum + item.quantity);
-  double get totalAmount => _cartItems.fold(0.0, (sum, item) => sum + item.totalPrice);
-
-  CartController();
-
-  // Add item to cart
-  Future<void> addToCart(Product product, String selectedSize, {int quantity = 1}) async {
-    // Check if item already exists in cart
-    int existingIndex = _cartItems.indexWhere(
-      (item) => item.product.id == product.id && item.selectedSize == selectedSize,
-    );
-
-    if (existingIndex >= 0) {
-      // Update quantity if item exists
-      _cartItems[existingIndex].quantity += quantity;
-    } else {
-      // Add new item
-      _cartItems.add(CartItem(
+  ApiCart? get cart => _cart;
+  bool get isLoading => _isLoading;
+  double get totalAmount => _cart?.totalAmount ?? 0.0;
+  int get totalItems => _cart?.totalItems ?? 0;
+  List<CartItem> get cartItems {
+    if (_cart == null) return [];
+    
+    return _cart!.items.map((apiItem) {
+      // Create a mock product since we don't have the full product data in the cart item
+      final product = Product(
+        id: apiItem.productId,
+        name: apiItem.productName,
+        price: apiItem.price,
+        originalPrice: null,
+        discount: null,
+        imageUrl: apiItem.imageUrl,
+        category: '',
+        description: '',
+        sizes: [],
+        rating: 0.0,
+        reviewCount: 0,
+      );
+      
+      return CartItem(
         product: product,
-        quantity: quantity,
-        selectedSize: selectedSize,
-      ));
+        quantity: apiItem.quantity,
+        selectedSize: apiItem.size,
+      );
+    }).toList();
+  }
+
+  // Add to cart
+  Future<bool> addToCart(int productId, int quantity) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final ApiCart? updatedCart = await _cartService.addToCart(productId, quantity);
+      if (updatedCart != null) {
+        _cart = updatedCart;
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      } else {
+        // Handle error - possibly authentication issue
+        print('CartController: Failed to add to cart - possibly authentication issue');
+      }
+    } catch (e) {
+      print('CartController: Add to cart error: $e');
     }
 
+    _isLoading = false;
+    notifyListeners();
+    return false;
+  }
+
+  // Get cart
+  Future<void> getCart() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final ApiCart? cartData = await _cartService.getCart();
+      if (cartData != null) {
+        _cart = cartData;
+      } else {
+        // Handle error - possibly authentication issue
+        print('CartController: Failed to get cart - possibly authentication issue');
+      }
+    } catch (e) {
+      print('CartController: Get cart error: $e');
+    }
+
+    _isLoading = false;
     notifyListeners();
   }
 
-  // Remove item from cart
-  void removeFromCart(int productId, String selectedSize) {
-    _cartItems.removeWhere(
-      (item) => item.product.id == productId && item.selectedSize == selectedSize,
-    );
+  // Remove from cart
+  Future<bool> removeFromCart(int productId) async {
+    _isLoading = true;
     notifyListeners();
+
+    try {
+      final ApiCart? updatedCart = await _cartService.removeFromCart(productId);
+      if (updatedCart != null) {
+        _cart = updatedCart;
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      } else {
+        // Handle error - possibly authentication issue
+        print('CartController: Failed to remove from cart - possibly authentication issue');
+      }
+    } catch (e) {
+      print('CartController: Remove from cart error: $e');
+    }
+
+    _isLoading = false;
+    notifyListeners();
+    return false;
   }
 
-  // Update item quantity
-  void updateQuantity(int productId, String selectedSize, int newQuantity) {
-    if (newQuantity <= 0) {
-      removeFromCart(productId, selectedSize);
-      return;
+  // Update quantity
+  Future<bool> updateQuantity(int productId, int quantity) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final ApiCart? updatedCart = await _cartService.updateQuantity(productId, quantity);
+      if (updatedCart != null) {
+        _cart = updatedCart;
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      } else {
+        // Handle error - possibly authentication issue
+        print('CartController: Failed to update quantity - possibly authentication issue');
+      }
+    } catch (e) {
+      print('CartController: Update quantity error: $e');
     }
 
-    int index = _cartItems.indexWhere(
-      (item) => item.product.id == productId && item.selectedSize == selectedSize,
-    );
+    _isLoading = false;
+    notifyListeners();
+    return false;
+  }
 
-    if (index >= 0) {
-      _cartItems[index].quantity = newQuantity;
-      notifyListeners();
+  // Update size
+  Future<bool> updateSize(int productId, String size) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final ApiCart? updatedCart = await _cartService.updateSize(productId, size);
+      if (updatedCart != null) {
+        _cart = updatedCart;
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      } else {
+        // Handle error - possibly authentication issue
+        print('CartController: Failed to update size - possibly authentication issue');
+      }
+    } catch (e) {
+      print('CartController: Update size error: $e');
     }
+
+    _isLoading = false;
+    notifyListeners();
+    return false;
   }
 
   // Clear cart
-  void clearCart() {
-    _cartItems.clear();
+  Future<bool> clearCart() async {
+    _isLoading = true;
     notifyListeners();
-  }
 
-  // Check if product is in cart
-  bool isInCart(int productId, String selectedSize) {
-    return _cartItems.any(
-      (item) => item.product.id == productId && item.selectedSize == selectedSize,
-    );
-  }
-
-  // Get cart item for specific product and size
-  CartItem? getCartItem(int productId, String selectedSize) {
     try {
-      return _cartItems.firstWhere(
-        (item) => item.product.id == productId && item.selectedSize == selectedSize,
-      );
+      final bool success = await _cartService.clearCart();
+      if (success) {
+        _cart = null;
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      } else {
+        // Handle error - possibly authentication issue
+        print('CartController: Failed to clear cart - possibly authentication issue');
+      }
     } catch (e) {
-      return null;
+      print('CartController: Clear cart error: $e');
     }
+
+    _isLoading = false;
+    notifyListeners();
+    return false;
   }
 }

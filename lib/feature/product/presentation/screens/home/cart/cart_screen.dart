@@ -14,11 +14,20 @@ class CartScreen extends StatefulWidget {
 
   const CartScreen({Key? key}) : super(key: key);
 
-
   @override
   State<CartScreen> createState() => _CartScreenState();
 }
+
 class _CartScreenState extends State<CartScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Load cart data when the screen is opened
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<CartController>(context, listen: false).getCart();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size mediaQuery = MediaQuery.of(context).size;
@@ -29,6 +38,12 @@ class _CartScreenState extends State<CartScreen> {
           final List<CartItem> cartItems = cartController.cartItems;
           
           // Show loading state if needed
+          if (cartController.isLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          
           if (cartItems.isEmpty) {
             return Center(
               child: Column(
@@ -76,7 +91,7 @@ class _CartScreenState extends State<CartScreen> {
         builder: (context, cartController, child) {
           final List<CartItem> cartItems = cartController.cartItems;
           
-          if (cartItems.isEmpty) {
+          if (cartController.isLoading || cartItems.isEmpty) {
             return const SizedBox.shrink();
           } else {
             // Calculate total price from cart controller

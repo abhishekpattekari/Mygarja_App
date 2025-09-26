@@ -28,7 +28,13 @@ class AuthController extends ChangeNotifier {
 
       if (apiUser != null) {
         print('AuthController: API login successful, creating User object');
-        print('AuthController: API User data - First Name: ${apiUser.firstName}, Last Name: ${apiUser.lastName}');
+        print('AuthController: API User data - First Name: ${apiUser.firstName}, Last Name: ${apiUser.lastName}, Token: ${apiUser.token}');
+        
+        // Save the token for future use
+        if (apiUser.token != null) {
+          await StorageService.saveAuthToken(apiUser.token!);
+          print('AuthController: Token saved to storage');
+        }
         
         _currentUser = User(
           id: apiUser.id,
@@ -70,7 +76,13 @@ class AuthController extends ChangeNotifier {
 
       if (apiUser != null) {
         print('AuthController: API signup successful, creating User object');
-        print('AuthController: API User data - First Name: ${apiUser.firstName}, Last Name: ${apiUser.lastName}');
+        print('AuthController: API User data - First Name: ${apiUser.firstName}, Last Name: ${apiUser.lastName}, Token: ${apiUser.token}');
+        
+        // Save the token for future use
+        if (apiUser.token != null) {
+          await StorageService.saveAuthToken(apiUser.token!);
+          print('AuthController: Token saved to storage');
+        }
         
         _currentUser = User(
           id: apiUser.id,
@@ -113,7 +125,7 @@ class AuthController extends ChangeNotifier {
       // Check for stored token
       final String? token = await StorageService.getAuthToken();
       if (token != null) {
-        print('AuthController: Found stored token, fetching user profile');
+        print('AuthController: Found stored token: $token');
         _authService.setToken(token);
         
         // Try to get user profile

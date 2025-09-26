@@ -13,11 +13,26 @@ class CartService extends ApiService {
       );
 
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        return ApiCart.fromJson(jsonData);
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          final jsonData = jsonDecode(response.body);
+          return ApiCart.fromJson(jsonData);
+        } else {
+          print('Add to cart failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          
+          // Check if this is an authentication issue
+          if (response.body.trim().startsWith('<!doctype') || response.body.trim().startsWith('<html')) {
+            print('Add to cart failed: Authentication error - token may be invalid or expired');
+          }
+          
+          return null;
+        }
       } else {
         // Handle error
         print('Add to cart failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
         return null;
       }
     } catch (e) {
@@ -32,11 +47,26 @@ class CartService extends ApiService {
       final response = await get('/user/cart', authenticated: true);
 
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        return ApiCart.fromJson(jsonData);
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          final jsonData = jsonDecode(response.body);
+          return ApiCart.fromJson(jsonData);
+        } else {
+          print('Get cart failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          
+          // Check if this is an authentication issue
+          if (response.body.trim().startsWith('<!doctype') || response.body.trim().startsWith('<html')) {
+            print('Get cart failed: Authentication error - token may be invalid or expired');
+          }
+          
+          return null;
+        }
       } else {
         // Handle error
         print('Get cart failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
         return null;
       }
     } catch (e) {
@@ -54,11 +84,26 @@ class CartService extends ApiService {
       );
 
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        return ApiCart.fromJson(jsonData);
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          final jsonData = jsonDecode(response.body);
+          return ApiCart.fromJson(jsonData);
+        } else {
+          print('Remove from cart failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          
+          // Check if this is an authentication issue
+          if (response.body.trim().startsWith('<!doctype') || response.body.trim().startsWith('<html')) {
+            print('Remove from cart failed: Authentication error - token may be invalid or expired');
+          }
+          
+          return null;
+        }
       } else {
         // Handle error
         print('Remove from cart failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
         return null;
       }
     } catch (e) {
@@ -77,11 +122,26 @@ class CartService extends ApiService {
       );
 
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        return ApiCart.fromJson(jsonData);
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          final jsonData = jsonDecode(response.body);
+          return ApiCart.fromJson(jsonData);
+        } else {
+          print('Update quantity failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          
+          // Check if this is an authentication issue
+          if (response.body.trim().startsWith('<!doctype') || response.body.trim().startsWith('<html')) {
+            print('Update quantity failed: Authentication error - token may be invalid or expired');
+          }
+          
+          return null;
+        }
       } else {
         // Handle error
         print('Update quantity failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
         return null;
       }
     } catch (e) {
@@ -100,11 +160,26 @@ class CartService extends ApiService {
       );
 
       if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        return ApiCart.fromJson(jsonData);
+        // Check if response is valid JSON
+        if (isValidJson(response.body)) {
+          final jsonData = jsonDecode(response.body);
+          return ApiCart.fromJson(jsonData);
+        } else {
+          print('Update size failed: Response is not valid JSON');
+          print('Response status: ${response.statusCode}');
+          print('Response content: ${response.body.substring(0, 500)}');
+          
+          // Check if this is an authentication issue
+          if (response.body.trim().startsWith('<!doctype') || response.body.trim().startsWith('<html')) {
+            print('Update size failed: Authentication error - token may be invalid or expired');
+          }
+          
+          return null;
+        }
       } else {
         // Handle error
         print('Update size failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
         return null;
       }
     } catch (e) {
@@ -118,7 +193,19 @@ class CartService extends ApiService {
     try {
       final response = await delete('/user/cart/clear', authenticated: true);
 
-      return response.statusCode == 200;
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        print('Clear cart failed with status: ${response.statusCode}');
+        print('Response content: ${response.body.substring(0, 500)}');
+        
+        // Check if this is an authentication issue
+        if (response.body.trim().startsWith('<!doctype') || response.body.trim().startsWith('<html')) {
+          print('Clear cart failed: Authentication error - token may be invalid or expired');
+        }
+        
+        return false;
+      }
     } catch (e) {
       print('Clear cart error: $e');
       return false;

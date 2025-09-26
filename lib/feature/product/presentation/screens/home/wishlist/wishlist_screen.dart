@@ -1,6 +1,8 @@
 import 'package:mygarja/feature/product/presentation/widgets/default_app_bar.dart';
 import 'package:mygarja/feature/product/presentation/widgets/product_card.dart';
-import 'package:mygarja/controllers/product_controller.dart';
+import 'package:mygarja/controllers/wishlist_controller.dart';
+import 'package:mygarja/controllers/auth_controller.dart';
+import 'package:mygarja/models/api/api_wishlist_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:mygarja/core/asset_constants.dart' as asset;
@@ -16,13 +18,41 @@ class WishlistScreen extends StatefulWidget {
 
 class _WishlistScreenState extends State<WishlistScreen> {
   @override
+  void initState() {
+    super.initState();
+    // Load wishlist data when the screen is opened
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authController = Provider.of<AuthController>(context, listen: false);
+      if (authController.isLoggedIn && authController.currentUser != null) {
+        Provider.of<WishlistController>(context, listen: false)
+            .getUserWishlist(authController.currentUser!);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: DefaultAppBar('My Wishlist'),
-      body: Consumer<ProductController>(
-        builder: (context, productController, child) {
-          // Use product controller for wishlist items
-          final wishlistItems = productController.products.take(3).toList();
+      body: Consumer2<WishlistController, AuthController>(
+        builder: (context, wishlistController, authController, child) {
+          final wishlistItems = wishlistController.wishlistItems;
+          
+          // Load wishlist if not already loaded and user is logged in
+          if (authController.isLoggedIn && 
+              authController.currentUser != null && 
+              wishlistItems.isEmpty && 
+              !wishlistController.isLoading) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              wishlistController.getUserWishlist(authController.currentUser!);
+            });
+          }
+          
+          if (wishlistController.isLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
           
           return wishlistItems.isEmpty
               ? Center(
@@ -67,51 +97,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
                           ),
                           itemCount: wishlistItems.length,
                           itemBuilder: (context, index) {
-                            final product = wishlistItems[index];
-                            return Stack(
-                              children: [
-                                ProductCard(
-                                  image_url: product.imageUrl,
-                                  title: product.name,
-                                  price: product.price,
-                                  category: product.category,
-                                ),
-                                Positioned(
-                                  top: 8,
-                                  right: 8,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      // In a real implementation, you would remove from actual wishlist
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text('${product.name} removed from wishlist'),
-                                          backgroundColor: Colors.red,
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.3),
-                                            spreadRadius: 1,
-                                            blurRadius: 2,
-                                          ),
-                                        ],
-                                      ),
-                                      child: const Icon(
-                                        Icons.favorite,
-                                        color: Colors.red,
-                                        size: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
+                            final item = wishlistItems[index];
+                            return WishlistItemCard(item: item);
                           },
                         ),
                       ),
@@ -120,6 +107,68 @@ class _WishlistScreenState extends State<WishlistScreen> {
                 );
         },
       ),
+    );
+  }
+}
+
+class WishlistItemCard extends StatelessWidget {
+  final ApiWishlistItem item;
+  
+  const WishlistItemCard({Key? key, required this.item}) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        ProductCard(
+          image_url: item.productImage,
+          title: item.productName,
+          price: item.productPrice,
+          category: '', // Category not available in wishlist item
+        ),
+        Positioned(
+          top: 8,
+          right: 8,
+          child: GestureDetector(
+            onTap: () {
+              final authController = Provider.of<AuthController>(context, listen: false);
+              if (authController.isLoggedIn && authController.currentUser != null) {
+                Provider.of<WishlistController>(context, listen: false)
+                    .removeWishlistItem(item.wishlistId)
+                    .then((success) {
+                  if (success) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('${item.productName} removed from wishlist'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                });
+              }
+            },
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+                    spreadRadius: 1,
+                    blurRadius: 2,
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.favorite,
+                color: Colors.red,
+                size: 20,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

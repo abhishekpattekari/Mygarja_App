@@ -5,6 +5,7 @@ import 'controllers/product_controller.dart';
 import 'controllers/cart_controller.dart';
 import 'controllers/order_controller.dart';
 import 'controllers/address_controller.dart';
+import 'controllers/wishlist_controller.dart';
 import 'feature/auth/presentation/screens/auth_screens/auth_main_screen.dart';
 import 'feature/auth/presentation/screens/auth_screens/login_screen.dart';
 import 'feature/auth/presentation/screens/auth_screens/signup_screen.dart';
@@ -29,6 +30,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => CartController()),
         ChangeNotifierProvider(create: (context) => OrderController()),
         ChangeNotifierProvider(create: (context) => AddressController()),
+        ChangeNotifierProvider(create: (context) => WishlistController()),
       ],
       child: MyApp(),
     ),
